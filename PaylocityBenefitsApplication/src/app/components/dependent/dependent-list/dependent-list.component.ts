@@ -24,11 +24,25 @@ export class DependentListComponent implements OnInit {
     if (this.id) {
       this.dependentService.getAllDependentsOfEmployee(this.id)
           .pipe(first())
-          .subscribe(dependents => this.dependents = dependents.data);
+          .subscribe(dependents => 
+            {
+              if(dependents.success)
+                this.dependents = dependents.data;
+              else{
+                this.alertService.info('No dependents available, Please add employee.');
+              }
+            });
     }else{
       this.dependentService.getAll()
           .pipe(first())
-          .subscribe(dependents => this.dependents = dependents.data);
+          .subscribe(dependents => 
+            {
+              if(dependents.success && dependents.data.length > 0)
+                this.dependents = dependents.data;
+              else{
+                this.alertService.info('No dependents available, Please add employee.');
+              }
+            });
     }
   }
   mapRelationship(id: number){

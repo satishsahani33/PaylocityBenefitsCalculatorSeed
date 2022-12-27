@@ -1,6 +1,7 @@
 ﻿using Api.CustomException;
 using Api.Dtos.Dependent;
 using Api.Dtos.Employee;
+using Api.Helper;
 using Api.Models;
 using Api.Repository;
 using Api.Repository.Contracts;
@@ -28,15 +29,15 @@ namespace Api.Controllers
         /// <exception cref="Exception"></exception>
         [SwaggerOperation(Summary = "Get all employees")]
         [HttpGet("{pageNumber}/{pageSize}/{orderBy}/{sortBy}")]
-        public async Task<ActionResult<ApiResponse<List<GetEmployeeDto>>>> GetAll(int pageNumber=1, int pageSize=100, string orderBy = "Id", string sortBy="asc")
+        public async Task<ActionResult<ApiResponse<List<GetEmployeeDto>>>> GetAll(int pageNumber = 1, int pageSize = 100, string orderBy = "Id", string sortBy = "asc")
         {
             try
             {
                 //task: use a more realistic production approach
 
                 var result = new ApiResponse<List<GetEmployeeDto>>();
-                var employees = await _employeeRepository.GetAllEmployees(pageNumber, pageSize, orderBy,sortBy);
-                if(employees != null)
+                var employees = await _employeeRepository.GetAllEmployees(pageNumber, pageSize, orderBy, sortBy);
+                if (employees != null)
                 {
                     result.Data = employees.ToList();
                     result.Success = true;
@@ -69,7 +70,7 @@ namespace Api.Controllers
             {
                 var result = new ApiResponse<GetEmployeeDto>();
                 var employee = await _employeeRepository.GetEmployee(id);
-                if(employee!= null)
+                if (employee != null)
                 {
                     result.Data = employee;
                     result.Success = true;
@@ -78,7 +79,7 @@ namespace Api.Controllers
                 else
                 {
                     result.Success = false;
-                    result.Message = "Something went wrong while fetching employee with id = "  + id.ToString();
+                    result.Message = "Something went wrong while fetching employee with id = " + id.ToString();
                 }
                 return result;
             }
@@ -104,7 +105,7 @@ namespace Api.Controllers
                 if (_employeeRepository.ValidateEmployeeDetails(newEmployee))
                 {
                     var employee = await _employeeRepository.AddEmployee(newEmployee);
-                    if(employee!= null)
+                    if (employee != null)
                     {
                         result.Data = employee;
                         result.Success = true;
@@ -120,7 +121,7 @@ namespace Api.Controllers
             }
             catch (Exception ex)
             {
-                throw new EmployeeCustomException(ex.Message,ex);
+                throw new EmployeeCustomException(ex.Message, ex);
             }
         }
 
@@ -139,7 +140,7 @@ namespace Api.Controllers
             {
                 var employee = await _employeeRepository.UpdateEmployee(id, updatedEmployee);
                 var result = new ApiResponse<GetEmployeeDto>();
-                if(employee != null)
+                if (employee != null)
                 {
                     result.Data = employee;
                     result.Success = true;
@@ -154,7 +155,7 @@ namespace Api.Controllers
             }
             catch (Exception ex)
             {
-                throw new EmployeeCustomException(ex.Message,ex);
+                throw new EmployeeCustomException(ex.Message, ex);
             }
         }
 
@@ -172,16 +173,43 @@ namespace Api.Controllers
             {
                 var deletedEmployee = await _employeeRepository.DeleteEmployee(id);
                 var result = new ApiResponse<GetEmployeeDto>();
-                if(deletedEmployee!= null)
+                if (deletedEmployee != null)
                 {
                     result.Data = deletedEmployee;
-                    result.Success = true; 
+                    result.Success = true;
                     result.Message = "Employee with Id = " + id + " is deleted successfully.";
                 }
                 else
                 {
                     result.Success = false;
                     result.Message = "Employee with Id = " + id.ToString() + " can not be deleted";
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new EmployeeCustomException(ex.Message, ex);
+            }
+        }
+        [SwaggerOperation(Summary = "Add employee")]
+        [HttpPost]
+        [Route("MockEmployees")]
+        public async Task<ActionResult<ApiResponse<List<GetEmployeeDto>>>> PostLoadMockData(string action)
+        {
+            try
+            {
+                var result = new ApiResponse<List<GetEmployeeDto>>();
+                var employeeMockData = await _employeeRepository.AddMockDataEmployee(EmployeeMockData.EmployeeList());
+                if (employeeMockData != null)
+                {
+                    result.Data = employeeMockData.ToList();
+                    result.Success = true;
+                    result.Message = "Employee added successfully.";
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = "Employee can not be added.";
                 }
                 return result;
             }
