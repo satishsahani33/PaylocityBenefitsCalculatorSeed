@@ -34,6 +34,7 @@ I have used angular for UI.
 ** PaylocityBenefitsApplication
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.0.4 and Node 18.12.21
+** Install the Angular CLI
 
 ** Navigate to PaylocityBenefitsApplication and then run following command through command line
 
@@ -41,30 +42,39 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
     ** ng serve --> To run the application
 ** Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
 
 # To run the Asp .Net Core API
 ** Navigate to PaylocityBenefitsCalculator and open solution file in Visual Studio 2022
+
 Requirements:
+
 Entity Frameworkcore, Mssql local database, dapper
 I have used sql local database for this project, so
- a. Create the "mypaycheckdb" database in ms sql local database.
- b.Restore Nuget packages from package manager, Right click solution file and select Restore Nuget Packages. It will install all the required packages.
+ ** Create the "mypaycheckdb" database in ms sql local database.
+ ** Restore Nuget packages from package manager, Right click solution file and select Restore Nuget Packages. It will install all the required packages.
 
-c. I have uses entity framework core and dapper
-d. Run the following two commands in package manager console. Make sure "mypaycheckdb" is already created in sql local database otherwise the command will throws error.
+** I have uses entity framework core and dapper
+** Run the following two commands in package manager console. Make sure "mypaycheckdb" is already created in sql local database otherwise the command will throws error.
 
      Add-Migration InitalMigration
      Update-Database
-e. After successfully executing these commands run the application(press F5), it will open Asp.Net Core Web API
+** After successfully executing these commands run the application(press F5), it will open Asp.Net Core Web API
 
-f. Browse through angular application
+** Make sure you are using the correct port
+Default angular UI runs at: `http://localhost:4200/`
+API runs at:
+
+** Browse through angular application
+
+** Click Load Mock Data in UI to load mock data in database
 
 
 # To run the Unit Test
 I have also create 6 test scenario in ApiTests project.
-To run simply go to Test Menu -> Run All Test
+To run simply 
+** Go to Test Menu -> Run All Test
 
 
 # Note: 

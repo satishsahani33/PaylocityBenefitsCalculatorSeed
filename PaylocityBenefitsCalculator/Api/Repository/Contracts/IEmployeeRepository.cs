@@ -11,7 +11,8 @@ namespace Api.Repository.Contracts
         public Task<GetEmployeeDto> UpdateEmployee(int id, UpdateEmployeeDto employee);
         public Task<GetEmployeeDto> DeleteEmployee(int id);
         public bool ValidateEmployeeDetails(AddEmployeeDto employeeDto);
-
+        
+        public Task<IEnumerable<GetEmployeeDto>> AddMockDataEmployee(List<AddEmployeeDto>  employee);
 
     }
 }

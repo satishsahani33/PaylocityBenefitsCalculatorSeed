@@ -90,7 +90,15 @@ export class EmployeeListComponent implements OnInit {
       
       this.employeeService.getAll()
           .pipe(first())
-          .subscribe(employees => this.employees = employees.data);
+          .subscribe(employees =>
+            { 
+              if(employees.success && employees.data.length > 0)
+                this.employees = employees.data;
+              else{
+                this.alertService.info('No employee available, Please add employee.');
+                this.alertService.info('Please click Initialize Data to load employees.');
+              }
+            });
   }
 
   deleteEmployee(id: string) {
@@ -103,20 +111,6 @@ export class EmployeeListComponent implements OnInit {
   }
   public openConfirmationDialog(id: string) {
     this.alertService.confirm('Please confirm', 'Are you sure you want to delete?')
-    .then((confirmed) => 
-    {
-      if(confirmed){
-        console.log('Employee deleted, id= :', id);
-        this.deleteEmployee(id);
-      }else{
-        console.log('User dismissed the dialog');
-      }
-    })
-    .catch(() => console.log('User dismissed the dialog'));
-  }
-
-  public openPayCheckConfirmation1(id: string) {
-    this.alertService.confirm('Please select', 'Are you sure you want to delete?')
     .then((confirmed) => 
     {
       if(confirmed){

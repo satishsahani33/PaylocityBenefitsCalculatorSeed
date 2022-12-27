@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { environment } from '@environments/environment';
 import { Employee,ApiResponse } from '@app/models';
@@ -29,5 +29,8 @@ export class EmployeeService {
 
   delete(id: string) {
       return this.http.delete<ApiResponse>(`${baseUrl}/${id}`);
+  }
+  createMockData(params: any){
+    return this.http.post<ApiResponse>(`${baseUrl}/MockEmployees?action=${params}`, '');
   }
 }

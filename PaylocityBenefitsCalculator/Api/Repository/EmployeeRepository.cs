@@ -159,6 +159,35 @@ namespace Api.Repository
                                     where (e.Relationship == Relationship.Spouse || e.Relationship == Relationship.DomesticPartner)
                                     select e).Count();
             return spouseCount <= 1 ? true:false;
-        }   
+        }
+        public async Task<IEnumerable<GetEmployeeDto>> AddMockDataEmployee(List<AddEmployeeDto> employees)
+        {
+            List<GetEmployeeDto> result = new List<GetEmployeeDto>();
+            foreach(AddEmployeeDto employee in employees)
+            {
+                GetEmployeeDto createdEmployee = await AddEmployee(employee);
+                result.Add(createdEmployee);
+            }
+            return result;
+        }
+        public async Task<bool> DatabaseCleanUp()
+        {
+            using (var connection = _applicationContext.CreateConnection())
+            {
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    var deleteQueryPaychecksTable = "DELETE * FROM PayChecks WITH (ROWLOCK)";
+                    var deleteQueryDependentsTable = "DELETE * FROM Dependents WITH (ROWLOCK)";
+                    var deleteQueryEmployeesTable = "DELETE * FROM Employees WITH (ROWLOCK)";
+                    var parameters = new DynamicParameters();
+                    await connection.ExecuteAsync(deleteQueryPaychecksTable, parameters, transaction);
+                    await connection.ExecuteAsync(deleteQueryDependentsTable, parameters, transaction);
+                    await connection.ExecuteAsync(deleteQueryEmployeesTable, parameters, transaction);
+                    transaction.Commit();
+                    return true;
+                }
+            }
+        }
     }
 }

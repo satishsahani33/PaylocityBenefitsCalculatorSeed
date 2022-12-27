@@ -26,14 +26,27 @@ export class ListPayCheckComponent implements OnInit {
         this.loading = true;
         this.payCheckService.getAllPayChecksOfEmployee(this.id)
             .pipe(first())
-            .subscribe(x => {
-                this.payChecks = x.data;
-                this.loading = false;
+            .subscribe(payChecks => {
+              this.loading = false;
+              if(payChecks.success && payChecks.data.length > 0){
+                this.payChecks = payChecks.data;
+              }
+              else{
+                this.alertService.info('No pay checks available for this employee, Please add calculate pay check.');
+              }
             });
     }else{
       this.payCheckService.getAll()
           .pipe(first())
-          .subscribe(payChecks => this.payChecks = payChecks.data);
+          .subscribe(payChecks => 
+            {
+              if(payChecks.success && payChecks.data.length > 0){
+                this.payChecks = payChecks.data;
+              }
+              else{
+                this.alertService.info('No pay checks available, Please calculate pay check.');
+              }
+            });
     }
   }
 
