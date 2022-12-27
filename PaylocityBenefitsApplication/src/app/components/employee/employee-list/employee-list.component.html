@@ -1,0 +1,81 @@
+<div class="container">
+    <div class="row">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th style="width: 15%">Employee Id</th>
+                    <th style="width: 15%">First Name</th>
+                    <th style="width: 15%">Last Name</th>
+                    <th style="width: 15%">Salary</th>
+                    <th style="width: 15%">Date of Birth</th>
+                    <th style="width: 15%">Dependents</th>
+                    <th style="width: 25%">Action</th>
+                    <th style="width: 25%">Pay Check</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let employee of employees">
+                    <td>{{employee.id}}</td>
+                    <td>{{employee.firstName}}</td>
+                    <td>{{employee.lastName}}</td>
+                    <td>{{employee.salary | currency}}</td>
+                    <td>{{employee.dateOfBirth | date:'YYYY-MM-dd'}}</td>
+                    <td>{{employee.dependents.length}} 
+                        <a routerLink="dependents/{{employee.id}}" class="btn btn-sm btn-primary me-1">View</a>
+                    </td>
+                    <td style="white-space: nowrap">
+                        <a routerLink="edit/{{employee.id}}" class="btn btn-sm btn-primary me-1">Edit</a>
+                        <button (click)="openConfirmationDialog(employee.id)" class="btn btn-sm btn-danger btn-delete-user" [disabled]="employee.isDeleting">
+                            <span *ngIf="employee.isDeleting" class="spinner-border spinner-border-sm"></span>
+                            <span *ngIf="!employee.isDeleting">Delete</span>
+                        </button>
+                    </td>
+                    <td style="white-space: nowrap">
+                        <a routerLink="payChecks/{{employee.id}}" class="btn btn-sm btn-primary me-1">View</a>
+                        <a (click)="openPayCheckConfirmation(content, employee.id, 'Calculate')" class="btn btn-sm btn-primary me-1">Calculate</a>
+                    </td>
+                </tr>
+                <tr *ngIf="!employees">
+                    <td colspan="4" class="text-center">
+                        <span class="spinner-border spinner-border-lg align-center"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div><a routerLink="/employee/add" class="btn btn-sm btn-success mb-2">Add Employee</a></div>
+</div>
+
+<ng-template #content let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">{{payCheckTitle}} Pay Check</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+	<div class="modal-body">
+		<form [formGroup]="payCheckForm" >
+            <div class="row">
+                <div class="col-5 mb-3">
+                <label class="form-label">Please Select Year</label>
+                <select formControlName="payCheckYear" class="form-control" [ngClass]="{ 'is-invalid': submitted }">
+                    <option *ngFor="let year of years" [value]="year.id">
+                      {{year.name}}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-5 mb-3">
+                    <label class="form-label">Please Select Month</label>
+                    <select formControlName="payCheckMonth" class="form-control" [ngClass]="{ 'is-invalid': submitted }">
+                        <option *ngFor="let payCheck of payCheckNumbers" [value]="payCheck.id">
+                            {{payCheck.name}}
+                          </option>
+                    </select>
+                </div>
+            </div>
+		</form>
+	</div>
+	<div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="modal.close(false)">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="modal.close(true)">{{ payCheckTitle }}</button>
+	</div>
+</ng-template>
+

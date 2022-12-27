@@ -1,25 +1,73 @@
-# What is this?
+# What is this
+This is a simple application for calculating pay check by applying some deduction rule.
 
-A project seed containing a React app ("app") with a C# dotnet API ("PaylocityBenefitsCalculator").  It is meant to get you started on the Paylocity Coding Challenge by taking some initial setup decisions away.
+# Feaures
+• User is able to add/edit/delete employees, dependents and pay checks
+  For Dependents:
+  1. An employee may only have 1 spouse or domestic partner (not both)
+  2. An employee may have an unlimited number of children
 
-The goal is to respect your time, avoid live coding, and get a sense for how you work.
+• User is able to calculate and view a paycheck for an employee based on year and pay check month given the following rules:
 
-# Coding Challenge
+Rules for calculation of pay check
+  1.26 paychecks per year with deductions spread as evenly as possible on each paycheck
+  2. employees have a base cost of $1,000 per month (for benefits)
+  3. each dependent represents an additional $600 cost per month (for benefits)
+  employees that make more than $80,000 per year will incur an additional 2% of their yearly salary in benefits costs
+  4. dependents that are over 50 years old will incur an additional $200 per month
 
-**Show us how you work.**
+## Run the application
 
-Each of our Paylocity product teams operates like a small startup, empowered to deliver business value in
-whatever way they see fit. Because our teams are close knit and fast moving it is imperative that you are able
-to work collaboratively with your fellow developers. 
+1. Clone the repo from github [GitHub Link (https://github.com/satishsahani33/PaylocityBenefitsCalculatorSeed)]
 
-This coding challenge is designed to allow you to demonstrate your abilities and discuss your approach to
-design and implementation with your potential colleagues. You are free to use whatever technologies you
-prefer but please be prepared to discuss the choices you’ve made. We encourage you to focus on creating a
-logical and functional solution rather than one that is completely polished and ready for production.
+2. Navigate to the folder "PaylocityBenefitsCalculatorSeed"
 
-The challenge can be used as a canvas to capture your strengths in addition to reflecting your overall coding
-standards and approach. There’s no right or wrong answer.  It’s more about how you think through the
-problem. We’re looking to see your skills in all three tiers so the solution can be used as a conversation piece
-to show our teams your abilities across the board.
+3. There are two three projects inside the folder "PaylocityBenefitsCalculatorSeed"
+    a. app folder --> React Application for UI
+    b. PaylocityBenefitsApplication folder --> Angular Application for UI
+    c. PaylocityBenefitsCalculator folder --> Asp.Net Core Web API for Backend API
 
-Requirements will be given separately.
+I have used angular for UI.
+
+## To Run the angular application
+
+** PaylocityBenefitsApplication
+
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.0.4 and Node 18.12.21
+
+** Navigate to PaylocityBenefitsApplication and then run following command through command line
+
+    ** run npm install --> It will install required packages
+    ** ng serve --> To run the application
+** Development server
+
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+
+
+# To run the Asp .Net Core API
+** Navigate to PaylocityBenefitsCalculator and open solution file in Visual Studio 2022
+Requirements:
+Entity Frameworkcore, Mssql local database, dapper
+I have used sql local database for this project, so
+ a. Create the "mypaycheckdb" database in ms sql local database.
+ b.Restore Nuget packages from package manager, Right click solution file and select Restore Nuget Packages. It will install all the required packages.
+
+c. I have uses entity framework core and dapper
+d. Run the following two commands in package manager console. Make sure "mypaycheckdb" is already created in sql local database otherwise the command will throws error.
+
+     Add-Migration InitalMigration
+     Update-Database
+e. After successfully executing these commands run the application(press F5), it will open Asp.Net Core Web API
+
+f. Browse through angular application
+
+
+# To run the Unit Test
+I have also create 6 test scenario in ApiTests project.
+To run simply go to Test Menu -> Run All Test
+
+
+# Note: 
+In case if you face any issue while running application, please feel free to email at satishsahani33@gmail.com
+
+

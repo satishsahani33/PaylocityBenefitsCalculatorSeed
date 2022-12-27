@@ -1,0 +1,84 @@
+<h5>Pay Check Details</h5>
+<div *ngIf="payCheckInfo"  class="row">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Pay Check Id</td>
+                <td>{{payCheckInfo.id}}</td>
+            </tr>
+            
+            <tr>
+                <td>Employee Id</td>
+                <td>{{payCheckInfo.employeeId}}</td>
+            </tr>
+            
+            <tr>
+                <td>Employee First Name</td>
+                <td>{{payCheckInfo.employeeFirstName}}</td>
+            </tr>
+            
+            <tr>
+                <td>Employee Last Name</td>
+                <td>{{payCheckInfo.employeeLastName}}</td>
+            </tr>
+            
+            <tr>
+                <td>Salary </td>
+                <td>{{payCheckInfo.yearlySalary | currency}}</td>
+            </tr>
+            <tr>
+                <td>Gross Pay Check </td>
+                <td>{{payCheckInfo.grossAmount | currency}}</td>
+            </tr>
+            
+            <tr>
+                <td>Employee Deduction</td>
+                <td>{{payCheckInfo.employeeDeduction | currency}}</td>
+            </tr>
+            
+            <tr>
+                <td>Dependent Deduction</td>
+                <td>{{payCheckInfo.dependentDeduction | currency}}</td>
+            </tr>
+            
+            <tr>
+                <td>Additional Based On Salary</td>
+                <td>{{payCheckInfo.additionalDeductionBasedOnSalary | currency}}</td>
+            </tr>
+            
+            <tr>
+                <td>Additional Based On Age</td>
+                <td>{{payCheckInfo.additionalDeductionBasedOnDependentAge | currency}}</td>
+            </tr>
+            
+            <tr>
+                <td>Net Pay Check:</td>
+                <td>{{payCheckInfo.netAmount | currency}}</td>
+            </tr>
+            <tr>
+                <td>Year</td>
+                <td>{{payCheckInfo.year}}</td>
+            </tr>
+            <tr>
+                <td>Month</td>
+                <td>{{payCheckInfo.month}}</td>
+            </tr>
+            <tr *ngIf="!payCheckInfo">
+                <td colspan="4" class="text-center">
+                    <span class="spinner-border spinner-border-lg align-center"></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div *ngIf="!payCheckInfo" class="row">
+    No Pay Check Available
+</div>
+<div><a routerLink="/payCheck" class="btn btn-sm btn-success mb-2">Back</a></div>
+<div *ngIf="loading" class="text-center m-5">
+    <span class="spinner-border spinner-border-lg align-center"></span>
+</div>

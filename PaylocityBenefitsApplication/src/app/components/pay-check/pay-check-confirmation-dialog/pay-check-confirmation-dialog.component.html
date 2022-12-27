@@ -1,0 +1,31 @@
+
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">{{payCheckTitle}} Pay Check</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="decline()"></button>
+	</div>
+	<div class="modal-body">
+		<form [formGroup]="payCheckForm" >
+            <div class="row">
+                <div class="col-5 mb-3">
+                <label class="form-label">Please Select Year</label>
+                <select formControlName="payCheckYear" class="form-control" [ngClass]="{ 'is-invalid': submitted }">
+                    <option *ngFor="let year of years" [value]="year.id">
+                      {{year.name}}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-5 mb-3">
+                    <label class="form-label">Please Select Month</label>
+                    <select formControlName="payCheckMonth" class="form-control" [ngClass]="{ 'is-invalid': submitted }">
+                        <option *ngFor="let payCheck of payCheckNumbers" [value]="payCheck.id">
+                            {{payCheck.name}}
+                          </option>
+                    </select>
+                </div>
+            </div>
+		</form>
+	</div>
+	<div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="decline()">{{ btnCancelText }}</button>
+      <button type="button" class="btn btn-primary" (click)="accept()">{{ btnOkText }}</button>
+	</div>

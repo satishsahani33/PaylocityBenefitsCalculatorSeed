@@ -1,0 +1,56 @@
+<h5>Pay Check List</h5>
+<div class="container">
+    <div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th style="width: 10%">Pay Check Id</th>
+                    <th style="width: 5%">Employee Id</th>
+                    <th style="width: 10%">First Name</th>
+                    <th style="width: 10%">Last Name</th>
+                    <!-- <th style="width: 5%">Salary</th>
+                    <th style="width: 5%">Gross Amount</th>
+                    <th style="width: 5%">Employee Deduction</th>
+                    <th style="width: 5%">Dependent Deduction</th>
+                    <th style="width: 5%">Additional Deduction Based On Salary</th>
+                    <th style="width: 5%">Additional Deduction Based On Age</th>
+                    <th style="width: 5%">Net Amount</th> -->
+                    <th style="width: 5%">Year</th>
+                    <th style="width: 15%">Pay Check Number</th>
+                    <th style="width: 15%">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let payCheck of payChecks">
+                    <td>{{payCheck.id}}</td>
+                    <td>{{payCheck.employeeId}}</td>
+                    <td>{{payCheck.employeeFirstName}}</td>
+                    <td>{{payCheck.employeeLastName}}</td>
+                    <!-- <td>{{payCheck.yearlySalary | currency}}</td>
+                    <td>{{payCheck.grossAmount | currency}}</td>
+                    <td>{{payCheck.employeeDeduction | currency}}</td>
+                    <td>{{payCheck.dependentDeduction | currency}}</td>
+                    <td>{{payCheck.additionalDeductionBasedOnSalary | currency}}</td>
+                    <td>{{payCheck.additionalDeductionBasedOnDependentAge | currency}}</td>
+                    <td>{{payCheck.netAmount | currency}}</td> -->
+                    <td>{{payCheck.year}}</td>
+                    <td>{{payCheck.month}}</td>
+                    <td style="white-space: nowrap">
+                        <a (click)="openCalculatePayCheckConfirmation(payCheck.employeeId, 'Calculate')" class="btn btn-sm btn-primary me-1">Add Pay Check</a>
+                        <a routerLink="/payCheck/view/{{payCheck.id}}" class="btn btn-sm btn-primary me-1">View Details</a>
+                        <button (click)="openConfirmationDialog(payCheck.id)" class="btn btn-sm btn-danger btn-delete-payCheck" [disabled]="payCheck.isDeleting">
+                            <span *ngIf="payCheck.isDeleting" class="spinner-border spinner-border-sm"></span>
+                            <span *ngIf="!payCheck.isDeleting">Delete</span>
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="!payChecks">
+                    <td colspan="4" class="text-center">
+                        <span class="spinner-border spinner-border-lg align-center"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div><a routerLink="/employee" class="btn btn-sm btn-success mb-2">Back</a></div>
+</div>
