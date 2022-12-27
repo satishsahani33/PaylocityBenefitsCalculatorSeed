@@ -2,6 +2,7 @@
 
 namespace Api.Dtos.Employee
 {
+
     public class AddEmployeeDto
     {
         public string? FirstName { get; set; }

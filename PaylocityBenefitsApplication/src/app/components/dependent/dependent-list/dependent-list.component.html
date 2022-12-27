@@ -1,0 +1,40 @@
+<div class="container">
+    <div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th style="width: 15%">Dependent Id</th>
+                    <th style="width: 15%">First Name</th>
+                    <th style="width: 15%">Last Name</th>
+                    <th style="width: 15%">Date of Birth</th>
+                    <th style="width: 15%">Relationship</th>
+                    <th style="width: 25%">Action</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let dependent of dependents">
+                    <td>{{dependent.id}}</td>
+                    <td>{{dependent.firstName}}</td>
+                    <td>{{dependent.lastName}}</td>
+                    <td>{{dependent.dateOfBirth | date:'YYYY-MM-dd'}}</td>
+                    <td>{{mapRelationship(dependent.relationship)}}</td>
+                    <td style="white-space: nowrap">
+                        <a routerLink="/dependent/edit/{{dependent.id}}" class="btn btn-sm btn-primary me-1">Edit</a>
+                        <button (click)="openConfirmationDialog(dependent.id)" class="btn btn-sm btn-danger btn-delete-user" [disabled]="dependent.isDeleting">
+                            <span *ngIf="dependent.isDeleting" class="spinner-border spinner-border-sm"></span>
+                            <span *ngIf="!dependent.isDeleting">Delete</span>
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="!dependents">
+                    <td colspan="4" class="text-center">
+                        <span class="spinner-border spinner-border-lg align-center"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div><a routerLink="/employee" class="btn btn-sm btn-success mb-2">Back</a></div>
+    <div><a routerLink="/dependent/add/{{id}}" class="btn btn-sm btn-success mb-2">Add Dependent</a></div>
+</div>
