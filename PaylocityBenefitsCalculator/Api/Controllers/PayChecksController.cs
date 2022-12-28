@@ -149,7 +149,6 @@ namespace Api.Controllers
                 else
                 {
                     result.Success = false;
-                    result.Success = false;
                     result.Message = "Pay Check can not be caluclated for employee id = " + employeeId.ToString() +
                         " Year = " + year + " and Month = " + month;
                 }
@@ -161,7 +160,51 @@ namespace Api.Controllers
             }
 
         }
+        /// <summary>
+        /// View Pay check of employee before calculating pay check
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        /// <exception cref="PayCheckCustomException"></exception>
+        [SwaggerOperation(Summary = "Calculate paycheck by employee id")]
+        [HttpGet]
+        [Route("Employee/{employeeId}/{year}/{month}")]
+        public async Task<ActionResult<ApiResponse<GetPayCheckDto>>> ViewPayCheck(int employeeId, string year, string month)
+        {
+            try
+            {
+                var employeePaycheck = await _payCheckRepository.ViewPayCheck(employeeId, year, month);
+                var result = new ApiResponse<GetPayCheckDto>();
+                if (employeePaycheck != null)
+                {
+                    result.Data = employeePaycheck;
+                    result.Success = true;
+                    if(employeePaycheck.NetAmount < 0)
+                    {
+                        result.Success = false;
+                        result.Message = "Employee salary is less than the net pay check amount.\nPay check will not be calculated for this employee."; ;
+                    }
+                    else
+                    {
+                        result.Message = "Pay check fetched successfully"; ;
+                    }
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = "Pay Check can not be fetched for employee id = " + employeeId.ToString() +
+                        " Year = " + year + " and Month = " + month;
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new PayCheckCustomException(ex.Message, ex);
+            }
 
+        }
         /// <summary>
         /// Update pay check of an employee
         /// </summary>

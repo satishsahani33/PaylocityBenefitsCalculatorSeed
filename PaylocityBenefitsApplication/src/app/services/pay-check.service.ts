@@ -32,4 +32,7 @@ export class PayCheckService {
   delete(id: string) {
       return this.http.delete(`${baseUrl}/${id}`);
   }
+  viewPayCheckOfEmployee(employeeId: string, year:string, month:string) {
+    return this.http.get<ApiResponse>(`${baseUrl}/employee/${employeeId}/${year}/${month}`);
+  }
 }
