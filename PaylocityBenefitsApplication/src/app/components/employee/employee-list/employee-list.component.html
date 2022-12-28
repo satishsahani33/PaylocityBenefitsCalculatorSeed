@@ -32,6 +32,7 @@
                     </td>
                     <td style="white-space: nowrap">
                         <a routerLink="payChecks/{{employee.id}}" class="btn btn-sm btn-primary me-1">View</a>
+                        <a (click)="openPayCheckConfirmation(content, employee.id, 'View Only')" class="btn btn-sm btn-primary me-1">View Only</a>
                         <a (click)="openPayCheckConfirmation(content, employee.id, 'Calculate')" class="btn btn-sm btn-primary me-1">Calculate</a>
                     </td>
                 </tr>

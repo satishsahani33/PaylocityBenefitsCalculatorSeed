@@ -39,9 +39,17 @@ export class EmployeeListComponent implements OnInit {
               this.alertService.error('Please select both year and month.');
                 return;
             }
-            this.router.navigateByUrl('/employee/calculatePayCheck/'+ id +'/'+this.payCheckForm.value.payCheckYear + '/'+this.payCheckForm.value.payCheckMonth);
-            console.log('Pay check will be calculated for employee id ' + id + ' of year = ' + 
-            this.payCheckForm.value.payCheckYear + ' and month = ' + this.payCheckForm.value.payCheckMonth);
+            if(title == 'View Only'){
+              this.router.navigateByUrl('/employee/viewPayCheck/'+ id +'/'+this.payCheckForm.value.payCheckYear + '/'+this.payCheckForm.value.payCheckMonth);
+              console.log('Pay check will be viewed for employee id ' + id + ' of year = ' + 
+              this.payCheckForm.value.payCheckYear + ' and month = ' + this.payCheckForm.value.payCheckMonth);
+            }
+            else{
+              this.router.navigateByUrl('/employee/calculatePayCheck/'+ id +'/'+this.payCheckForm.value.payCheckYear + '/'+this.payCheckForm.value.payCheckMonth);
+              console.log('Pay check will be calculated for employee id ' + id + ' of year = ' + 
+              this.payCheckForm.value.payCheckYear + ' and month = ' + this.payCheckForm.value.payCheckMonth);
+            }
+            
           }
         }
       );

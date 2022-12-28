@@ -19,7 +19,8 @@ const routes: Routes = [
         { path: 'dependents/:id', component: DependentListComponent },
         { path: 'payChecks/:id', component: ListPayCheckComponent },
         { path: 'viewPayCheck/:id', component: ViewPayCheckComponent },
-        { path: 'calculatePayCheck/:id/:year/:month', component: CalculatePayCheckComponent }
+        { path: 'calculatePayCheck/:id/:year/:month', component: CalculatePayCheckComponent },
+        { path: 'viewPayCheck/:id/:year/:month', component: ViewPayCheckComponent }
       ]
   }
 ];
