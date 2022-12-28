@@ -50,18 +50,24 @@ namespace Api.Repository
         {
             using (var connection = _applicationContext.CreateConnection())
             {
-                GetDependentDto getDependentDto = new GetDependentDto();
-                var query = "insert into Dependents(FirstName, LastName, DateOfBirth, Relationship, EmployeeId) OUTPUT INSERTED.* " +
-                                                   "Values(@FirstName, @LastName,@DateOfBirth, @Relationship, @EmployeeId)";
-                var parameters = new DynamicParameters();
-                parameters.Add("FirstName", newDependent.FirstName, DbType.String);
-                parameters.Add("LastName", newDependent.LastName, DbType.String);
-                parameters.Add("DateOfBirth", newDependent.DateOfBirth, DbType.Date);
-                parameters.Add("Relationship", newDependent.Relationship, DbType.String);
-                parameters.Add("EmployeeId", newDependent.EmployeeId, DbType.Int64);
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    GetDependentDto getDependentDto = new GetDependentDto();
+                    var query = "insert into Dependents(FirstName, LastName, DateOfBirth, Relationship, EmployeeId) OUTPUT INSERTED.* " +
+                                                       "Values(@FirstName, @LastName,@DateOfBirth, @Relationship, @EmployeeId)";
+                    var parameters = new DynamicParameters();
+                    parameters.Add("FirstName", newDependent.FirstName, DbType.String);
+                    parameters.Add("LastName", newDependent.LastName, DbType.String);
+                    parameters.Add("DateOfBirth", newDependent.DateOfBirth, DbType.Date);
+                    parameters.Add("Relationship", newDependent.Relationship, DbType.String);
+                    parameters.Add("EmployeeId", newDependent.EmployeeId, DbType.Int64);
 
-                var dependent = await connection.QueryAsync<AddDependentWithEmployeeIdDto>(query, parameters);
-                return dependent;
+                    var dependent = await connection.QueryAsync<AddDependentWithEmployeeIdDto>(query, parameters, transaction);
+
+                    transaction.Commit();
+                    return dependent;
+                }
             }
 
         }
@@ -69,23 +75,28 @@ namespace Api.Repository
         {
             using (var connection = _applicationContext.CreateConnection())
             {
-                var query = "Update Dependents  WITH (ROWLOCK) set FirstName = @FirstName, LastName = @LastName, DateOfBirth = @DateOfBirth " +
-                        ", Relationship=@Relationship OUTPUT INSERTED.* WHERE Id = @Id ";
-
-                var parameters = new DynamicParameters();
-                parameters.Add("Id", id, DbType.Int64);
-                parameters.Add("FirstName", updatedDependent.FirstName, DbType.String);
-                parameters.Add("LastName", updatedDependent.LastName, DbType.String);
-                parameters.Add("DateOfBirth", updatedDependent.DateOfBirth, DbType.Date);
-                parameters.Add("Relationship", updatedDependent.Relationship, DbType.String);
-
-                var updatedEmployeeInfo = await connection.QuerySingleOrDefaultAsync<GetDependentDto>(query, parameters);
-                if(updatedEmployeeInfo != null)
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
                 {
-                    var dependentInfo = await GetDependentInfo(id);
-                    updatedEmployeeInfo.Id = dependentInfo.EmployeeId;
+                    var query = "Update Dependents  WITH (ROWLOCK) set FirstName = @FirstName, LastName = @LastName, DateOfBirth = @DateOfBirth " +
+                            ", Relationship=@Relationship OUTPUT INSERTED.* WHERE Id = @Id ";
+
+                    var parameters = new DynamicParameters();
+                    parameters.Add("Id", id, DbType.Int64);
+                    parameters.Add("FirstName", updatedDependent.FirstName, DbType.String);
+                    parameters.Add("LastName", updatedDependent.LastName, DbType.String);
+                    parameters.Add("DateOfBirth", updatedDependent.DateOfBirth, DbType.Date);
+                    parameters.Add("Relationship", updatedDependent.Relationship, DbType.String);
+
+                    var updatedEmployeeInfo = await connection.QuerySingleOrDefaultAsync<GetDependentDto>(query, parameters, transaction);
+                    if (updatedEmployeeInfo != null)
+                    {
+                        var dependentInfo = await GetDependentInfo(id);
+                        updatedEmployeeInfo.Id = dependentInfo.EmployeeId;
+                    }
+                    transaction.Commit();
+                    return updatedEmployeeInfo;
                 }
-                return updatedEmployeeInfo;
             }
         }
 
@@ -102,9 +113,14 @@ namespace Api.Repository
         {
             using (var connection = _applicationContext.CreateConnection())
             {
-                var query = "DELETE from Dependents WITH (ROWLOCK) OUTPUT DELETED.* WHERE Id = @Id";
-                var dependent = await connection.QuerySingleOrDefaultAsync<GetDependentDto>(query, new { id });
-                return dependent;
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    var query = "DELETE from Dependents WITH (ROWLOCK) OUTPUT DELETED.* WHERE Id = @Id";
+                    var dependent = await connection.QuerySingleOrDefaultAsync<GetDependentDto>(query, new { id }, transaction);
+                    transaction.Commit();
+                    return dependent;
+                }
             }
         }
         public async Task<Dependent> GetDependentInfo(int id)

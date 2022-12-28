@@ -26,17 +26,24 @@ namespace Api.Repository
         {
             using (var connection = _applicationContext.CreateConnection())
             {
-                var query = "SELECT Id, EmployeeId, EmployeeFirstName, EmployeeLastName, YearlySalary, GrossAmount," +
-                    "EmployeeDeduction, DependentDeduction, AdditionalDeductionBasedOnSalary, " +
-                    "AdditionalDeductionBasedOnDependentAge, NetAmount,[Year],[Month] " +
-                    "FROM paychecks WITH (NOLOCK)" +
-                    "ORDER BY EmployeeId, [YEAR], [MONTH] OFFSET (@PageNumber-1)*@PageSize ROWS FETCH NEXT @PageSize ROWS ONLY";
-                var parameters = new DynamicParameters();
-                parameters.Add("PageNumber", pageNumber, DbType.Int64);
-                parameters.Add("PageSize", pageSize, DbType.Int64);
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
 
-                var payChecks = await connection.QueryAsync<GetPayCheckDto>(query, parameters);
-                return payChecks;
+
+                    var query = "SELECT Id, EmployeeId, EmployeeFirstName, EmployeeLastName, YearlySalary, GrossAmount," +
+                        "EmployeeDeduction, DependentDeduction, AdditionalDeductionBasedOnSalary, " +
+                        "AdditionalDeductionBasedOnDependentAge, NetAmount,[Year],[Month] " +
+                        "FROM paychecks WITH (NOLOCK)" +
+                        "ORDER BY EmployeeId, [YEAR], [MONTH] OFFSET (@PageNumber-1)*@PageSize ROWS FETCH NEXT @PageSize ROWS ONLY";
+                    var parameters = new DynamicParameters();
+                    parameters.Add("PageNumber", pageNumber, DbType.Int64);
+                    parameters.Add("PageSize", pageSize, DbType.Int64);
+
+                    var payChecks = await connection.QueryAsync<GetPayCheckDto>(query, parameters, transaction);
+                    transaction.Commit();
+                    return payChecks;
+                }
             }
         }
         public async Task<GetPayCheckDto> GetPayCheck(int id)
@@ -46,8 +53,13 @@ namespace Api.Repository
                 "AdditionalDeductionBasedOnDependentAge, NetAmount,[Year],[Month] FROM paychecks WITH (NOLOCK) WHERE Id = @id";
             using (var connection = _applicationContext.CreateConnection())
             {
-                var employeePayCheck = await connection.QuerySingleOrDefaultAsync<GetPayCheckDto>(query, new { id });
-                return employeePayCheck;
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    var employeePayCheck = await connection.QuerySingleOrDefaultAsync<GetPayCheckDto>(query, new { id },transaction);
+                    transaction.Commit();
+                    return employeePayCheck;
+                }
             }
         }
         public async Task<GetPayCheckDto> AddPayCheck(int employeeId, string year, string month)
@@ -168,9 +180,14 @@ namespace Api.Repository
         {
             using (var connection = _applicationContext.CreateConnection())
             {
-                var query = "DELETE from PayChecks WITH (ROWLOCK) OUTPUT DELETED.* WHERE Id = @Id";
-                var dependent = await connection.QuerySingleOrDefaultAsync<GetPayCheckDto>(query, new { id });
-                return dependent;
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    var query = "DELETE from PayChecks WITH (ROWLOCK) OUTPUT DELETED.* WHERE Id = @Id";
+                    var dependent = await connection.QuerySingleOrDefaultAsync<GetPayCheckDto>(query, new { id }, transaction);
+                    transaction.Commit();
+                    return dependent;
+                }
             }
         }
 
@@ -180,23 +197,28 @@ namespace Api.Repository
 
             using (var connection = _applicationContext.CreateConnection())
             {
-                var parameters = new DynamicParameters();
-                if (year != "" && month != "")
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
                 {
-                    subQuery = @" AND [YEAR] = @Year and [Month] = @Month";
-                    parameters.Add("Year", year, DbType.String);
-                    parameters.Add("Month", month, DbType.String);
+                    var parameters = new DynamicParameters();
+                    if (year != "" && month != "")
+                    {
+                        subQuery = @" AND [YEAR] = @Year and [Month] = @Month";
+                        parameters.Add("Year", year, DbType.String);
+                        parameters.Add("Month", month, DbType.String);
+                    }
+                    parameters.Add("Id", id, DbType.Int64);
+
+                    var query = "SELECT Id, EmployeeId, EmployeeFirstName, EmployeeLastName, YearlySalary, GrossAmount, " +
+                        "EmployeeDeduction, DependentDeduction, AdditionalDeductionBasedOnSalary, " +
+                        "AdditionalDeductionBasedOnDependentAge, NetAmount," +
+                        "[Year],[Month] " +
+                        "FROM paychecks WITH (NOLOCK) WHERE EmployeeId = @id" + subQuery + " ORDER BY EmployeeId, [YEAR], [MONTH]";
+
+                    var payChecks = await connection.QueryAsync<GetPayCheckDto>(query, parameters,transaction);
+                    transaction.Commit();
+                    return payChecks;
                 }
-                parameters.Add("Id", id, DbType.Int64);
-
-                var query = "SELECT Id, EmployeeId, EmployeeFirstName, EmployeeLastName, YearlySalary, GrossAmount, " +
-                    "EmployeeDeduction, DependentDeduction, AdditionalDeductionBasedOnSalary, " +
-                    "AdditionalDeductionBasedOnDependentAge, NetAmount," +
-                    "[Year],[Month] " +
-                    "FROM paychecks WITH (NOLOCK) WHERE EmployeeId = @id" + subQuery + " ORDER BY EmployeeId, [YEAR], [MONTH]";
-
-                var payChecks = await connection.QueryAsync<GetPayCheckDto>(query, parameters);
-                return payChecks;
             }
         }
         public GetPayCheckDto CalculatePayCheck(GetEmployeeDto employee, string year = "", string month = "")
