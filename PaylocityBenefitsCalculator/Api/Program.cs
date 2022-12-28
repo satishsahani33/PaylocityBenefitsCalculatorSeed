@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddSingleton<DapperApplicationContext>();
+builder.Services.AddSingleton<EmployeeDbContext>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IPayCheckRepository, PayCheckRepository>();
 builder.Services.AddScoped<ICommonRepository, CommonRepository>();
