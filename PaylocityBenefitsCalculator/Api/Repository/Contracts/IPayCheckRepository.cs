@@ -8,7 +8,7 @@ namespace Api.Repository.Contracts
 {
     public interface IPayCheckRepository
     {
-        public Task<IEnumerable<GetPayCheckDto>> GetAllPayChecks(int pageNumber = 1, int pageSize = 100, string orderBy="", string sortBy="");
+        public Task<IEnumerable<GetPayCheckDto>> GetAllPayChecks(int pageNumber = 1, int pageSize = 100, string orderBy="EmployeeId", string sortBy="asc");
         public Task<GetPayCheckDto> GetPayCheck(int id);
         public Task<GetPayCheckDto> AddPayCheck(int employeeId,string year, string month);
         public Task<GetPayCheckDto> UpdatePayCheck(int id, int employeeId, string year, string month);

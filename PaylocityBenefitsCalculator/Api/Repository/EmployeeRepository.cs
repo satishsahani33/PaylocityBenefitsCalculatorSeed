@@ -22,12 +22,12 @@ namespace Api.Repository
             _applicationContext = applicationContext;
             _commonRepository = commonRepository;
         }
-        public async Task<IEnumerable<GetEmployeeDto>> GetAllEmployees(int pageNumber = 1, int pageSize = 100, string orderBy = "", string sortBy="")
+        public async Task<IEnumerable<GetEmployeeDto>> GetAllEmployees(int pageNumber = 1, int pageSize = 100, string orderBy = "Id", string sortBy="asc")
         {
             using (var connection = _applicationContext.CreateConnection())
             {
                 var query = "SELECT Id, FirstName, LastName, Salary, DateOfBirth FROM employees WITH (NOLOCK) " +
-                    "ORDER by Id OFFSET (@PageNumber-1)*@PageSize ROWS FETCH NEXT @PageSize ROWS ONLY";
+                    "ORDER by " + orderBy +" "+  sortBy + " OFFSET (@PageNumber-1)*@PageSize ROWS FETCH NEXT @PageSize ROWS ONLY";
                 var parameters = new DynamicParameters();
                 parameters.Add("PageNumber", pageNumber, DbType.Int64);
                 parameters.Add("PageSize", pageSize, DbType.Int64);

@@ -5,7 +5,7 @@ namespace Api.Repository.Contracts
 {
     public interface IDependentRepository
     {
-        public Task<IEnumerable<GetDependentDto>> GetAllDependents(int pageNumber = 1, int pageSize = 100, string orderBy="Id", string sortBy="asc");
+        public Task<IEnumerable<GetDependentDto>> GetAllDependents(int pageNumber = 1, int pageSize = 100, string orderBy= "EmployeeId", string sortBy="asc");
         public Task<GetDependentDto> GetDependent(int id);
         public Task<IEnumerable<AddDependentWithEmployeeIdDto>> AddDependent(AddDependentWithEmployeeIdDto newDependent);
         public Task<GetDependentDto> UpdateDependent(int id, UpdateDependentDto updatedDependent);

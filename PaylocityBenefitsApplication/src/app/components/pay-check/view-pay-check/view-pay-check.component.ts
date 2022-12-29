@@ -37,6 +37,9 @@ export class ViewPayCheckComponent implements OnInit {
                   this.alertService.error(x.message);
                 }
                   this.payCheckInfo = x.data;
+                  if(this.payCheckInfo.employeeId == 0){
+                    this.payCheckInfo.employeeId = this.id;
+                  }
                   this.loading = false;
               });
         }else{
