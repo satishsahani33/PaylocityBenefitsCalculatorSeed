@@ -9,6 +9,7 @@ import { EmployeeListComponent } from './employee-list/employee-list.component';
 import { AddEmployeeComponent } from './add-employee/add-employee.component';
 import { ViewPayCheckComponent } from '../pay-check/view-pay-check/view-pay-check.component';
 import { CalculatePayCheckComponent } from '../pay-check/calculate-pay-check/calculate-pay-check.component';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { CalculatePayCheckComponent } from '../pay-check/calculate-pay-check/cal
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    EmployeeRoutingModule
+    EmployeeRoutingModule,
+    NgbPaginationModule
   ]
 })
 export class EmployeeModule { }

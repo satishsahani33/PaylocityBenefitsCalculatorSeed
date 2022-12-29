@@ -8,7 +8,7 @@ import { HomeComponent } from './components/home/home.component';
 import { HttpErrorInterceptor } from './helpers/http-error.interceptor';
 import { AlertComponent } from './components/alert/alert.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from './services';
 
 @NgModule({
@@ -23,7 +23,8 @@ import { AlertService } from './services';
     ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
-    NgbModule
+    NgbModule,
+    NgbPaginationModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },

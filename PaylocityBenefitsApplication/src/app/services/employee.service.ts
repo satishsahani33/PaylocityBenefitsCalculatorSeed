@@ -11,7 +11,7 @@ const baseUrl = `${environment.apiUrl}/employees`;
 export class EmployeeService {
   constructor(private http: HttpClient) { }
 
-  getAll(pageNumber :string= '1', pageSize:string= '100', orderBy:string= 'Id',sortBy:string= 'asc') {
+  getAll(pageNumber :number= 1, pageSize:number= 15, orderBy:string= 'Id',sortBy:string= 'asc') {
       return this.http.get<ApiResponse>(`${baseUrl}/${pageNumber}/${pageSize}/${orderBy}/${sortBy}`);
   }
 

@@ -19,11 +19,25 @@ export class EmployeeListComponent implements OnInit {
   payCheckTitle?: string;
   years?: any[];
   payCheckNumbers?: any[];
-
+	page = 1;
+  pageSize = 10;
+  totalEmployees: number = 0;
+  
+  pageNumber?: number;
+  employeePageSize?: number;
+  orderBy?: string;
+  sortBy?:string
+  
   constructor(
     private formBuilder: FormBuilder,private employeeService: EmployeeService,
     private alertService: AlertService, private modalService: NgbModal,
-    private router: Router) {}
+    private router: Router) {
+      this.pageNumber = 1;
+      this.employeePageSize = 15;
+      this.orderBy = 'Id';
+      this.sortBy = 'desc';
+      this.employees = [];
+    }
     
     openPayCheckConfirmation(content:any, id:string, title: string) {
       console.log(title + ' Pay Check Started for employee with id = '+ id);
@@ -95,20 +109,26 @@ export class EmployeeListComponent implements OnInit {
         {id: 'Pay Check 25', name: 'Pay Check 25'},
         {id: 'Pay Check 26', name: 'Pay Check 26'},
       ];
-      
-      this.employeeService.getAll()
-          .pipe(first())
-          .subscribe(employees =>
-            { 
-              if(employees.success && employees.data.length > 0)
-                this.employees = employees.data;
-              else{
-                this.alertService.info('No employee available, Please add employee.');
-                this.alertService.info('Please click Initialize Data to load employees.');
-              }
-            });
+      this.fetchEmployees();
   }
 
+  fetchEmployees(){
+    this.page = 1; //when next block of emplyee is fetched, initialize to page 1
+    this.employeeService.getAll(this.pageNumber, this.employeePageSize, this.orderBy,this.sortBy)
+    .pipe(first())
+    .subscribe(employees =>
+      { 
+        if(employees.success && employees.data.length > 0){
+          this.employees = employees.data;
+          this.totalEmployees= Number(this.employees?.length);
+          console.log('Current Employe block = ' + this.pageNumber);
+        }
+        else{
+          this.alertService.info('No employee available, Please add employee.');
+          this.alertService.info('Please click Initialize Data to load employees.');
+        }
+      });
+  }
   deleteEmployee(id: string) {
       const employee = this.employees!.find(x => x.id === id);
       employee.isDeleting = true;
@@ -129,5 +149,26 @@ export class EmployeeListComponent implements OnInit {
       }
     })
     .catch(() => console.log('User dismissed the dialog'));
+  }
+  currentBlock: number = 1
+  fetchNextBlock(){
+    if(this.pageNumber){
+      if(this.employees && this.employeePageSize)
+      if( this.employees.length == this.employeePageSize){
+        this.pageNumber++;
+        this.fetchEmployees();
+      }
+    }
+  }
+  fetchPreviousBlock(){
+    if(this.pageNumber){
+      if(this.pageNumber - 1 == 0){
+        this.pageNumber = 1;
+      }else{
+        this.pageNumber--;
+        this.fetchEmployees();
+      }
+    }
+    
   }
 }
