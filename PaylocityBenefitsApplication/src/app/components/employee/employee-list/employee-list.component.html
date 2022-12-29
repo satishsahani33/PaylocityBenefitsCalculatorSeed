@@ -1,5 +1,22 @@
 <div class="container">
     <div class="row">
+        <div class="col-3 mb-3">
+            <div>
+                <a (click)="fetchPreviousBlock()" class="btn btn-sm btn-success mb-2">Fetch Previous Block of Employee</a>
+            </div>
+        </div>
+        
+        <div class="col-3 mb-3">
+            <div>
+                <a (click)="fetchNextBlock()" class="btn btn-sm btn-success mb-2">Fetch Next Block of Employee</a>
+            </div>
+        </div>
+        <div class="col-3 mb-3"></div>
+        <div class="col-3 mb-3">
+            <div style="float: right;"><a routerLink="/employee/add" class="btn btn-sm btn-success mb-2">Add Employee</a></div>
+        </div>
+    </div>
+    <div class="row">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -14,7 +31,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let employee of employees">
+                <tr *ngFor="let employee of employees | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
                     <td>{{employee.id}}</td>
                     <td>{{employee.firstName}}</td>
                     <td>{{employee.lastName}}</td>
@@ -43,8 +60,8 @@
                 </tr>
             </tbody>
         </table>
-    </div>
-    <div><a routerLink="/employee/add" class="btn btn-sm btn-success mb-2">Add Employee</a></div>
+    </div><pre>Current page: {{page}}</pre>
+    <ngb-pagination [collectionSize]="totalEmployees" [(page)]="page" aria-label="Default pagination"></ngb-pagination>
 </div>
 
 <ng-template #content let-modal>
