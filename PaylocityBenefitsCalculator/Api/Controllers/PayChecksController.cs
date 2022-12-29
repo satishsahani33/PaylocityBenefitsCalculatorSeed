@@ -184,7 +184,7 @@ namespace Api.Controllers
                     if(employeePaycheck.NetAmount < 0)
                     {
                         result.Success = false;
-                        result.Message = "Employee salary is less than the net pay check amount.\nPay check will not be calculated for this employee."; ;
+                        result.Message = "Net pay check amount is negative. Employee salary is less than the total deduction amount.\nPay check will not be calculated for this employee."; ;
                     }
                     else
                     {

@@ -25,110 +25,44 @@ namespace Api.Helper
 
             return employeePayCheck;
         }
-        public static decimal CalculateDeduction(string deductionName, decimal deductionValue)
-        {
-            decimal deductionAmount = deductionValue;
-            if (deductionName.Contains("PerMonth"))
-            {
-                deductionAmount = decimal.Multiply(deductionValue, 12);
-            }
-            deductionAmount = decimal.Divide(deductionAmount, 26);
-            return deductionAmount;
-        }
         public static Deduction GetAllDeduction(GetEmployeeDto employee)
         {
             Deduction deduction = new Deduction();
-            Dictionary<string, decimal> deductionTypes = BenefitDeductionRule.GetAllBenefitDeductionTypes();
-            deduction.GrossSalaryPerPayCheck = CalculateDeduction("salary", employee.Salary);
-
             decimal netDeduction = 0.00m;
-            if (deductionTypes != null && deductionTypes.Count > 0)
-            {
-                foreach (KeyValuePair<string, decimal> deductionType in deductionTypes)
-                {
-                    if (deductionType.Key == "EmployeeDeductionPerMonth")
-                    {
-                        deduction.EmployeeDeduction = CalculateDeduction(deductionType.Key, deductionType.Value);
-                        netDeduction = decimal.Add(netDeduction, deduction.EmployeeDeduction);
-                    }
-                    else if (deductionType.Key == "NonRelationDependentDeductionPerMonth")
-                    {
-                        deduction.NonRelationDependentDeduction = CalculateDeduction(deductionType.Key, deductionType.Value);
-                    }
-                    else if (deductionType.Key == "SpouseDependentDeductionPerMonth")
-                    {
-                        deduction.SpouseDependentDeduction = CalculateDeduction(deductionType.Key, deductionType.Value);
-                    }
-                    else if (deductionType.Key == "DomesticPartnerDependentDeductionPerMonth")
-                    {
-                        deduction.DomesticPartnerDependentDeduction = CalculateDeduction(deductionType.Key, deductionType.Value);
-                    }
-                    else if (deductionType.Key == "ChildDependentDeductionPerMonth")
-                    {
-                        deduction.ChildDependentDeduction = CalculateDeduction(deductionType.Key, deductionType.Value);
-                    }
-                    else if (deductionType.Key == "AdditionalDeductionBasedOnSalaryPerYear")
-                    {
-                        if (employee.Salary > 80000)
-                        {
-                            deduction.AdditionalDeductionBasedOnSalary = CalculateDeduction(deductionType.Key, decimal.Multiply(employee.Salary, deductionType.Value));
-                            netDeduction = decimal.Add(netDeduction, deduction.AdditionalDeductionBasedOnSalary);
-                        }
-                    }
-                    else if (deductionType.Key == "AdditionalDeductionBasedOnDependentAgePerMonth")
-                    {
-                        deduction.AdditionalDeductionBasedOnDependentAge = CalculateDeduction(deductionType.Key, deductionType.Value);
-                    }
-                }
-            }
-
-            //Count to track the number of dependents
-            int noneRelationDependentCount = 0;
-            int spouseDependentCount = 0;
-            int domesticPartnerDependentCount = 0;
-            int childDependentCount = 0;
-            int ageCount = 0;
-            if (employee.Dependents.Count > 0)
-            {
-                foreach (var dependent in employee.Dependents)
-                {
-                    if (dependent.Relationship == Relationship.None) { noneRelationDependentCount++; }
-                    if (dependent.Relationship == Relationship.Spouse) { spouseDependentCount++; }
-                    if (dependent.Relationship == Relationship.DomesticPartner) { domesticPartnerDependentCount++; }
-                    if (dependent.Relationship == Relationship.Child) { childDependentCount++; }
-
-                    int ageOfDependent = new DateTime(DateTime.Now.Subtract(dependent.DateOfBirth).Ticks).Year - 1;
-                    if (ageOfDependent > 50)
-                    {
-                        ageCount++;
-                    }
-                }
-            }
-            deduction.NonRelationDependentDeduction = decimal.Multiply(deduction.NonRelationDependentDeduction, noneRelationDependentCount);
-            deduction.SpouseDependentDeduction = decimal.Multiply(deduction.SpouseDependentDeduction, spouseDependentCount);
-            deduction.DomesticPartnerDependentDeduction = decimal.Multiply(deduction.DomesticPartnerDependentDeduction, domesticPartnerDependentCount);
-            deduction.ChildDependentDeduction = decimal.Multiply(deduction.ChildDependentDeduction, childDependentCount);
+            deduction.GrossSalaryPerPayCheck = DeductionHelper.CalculateDeduction("salary", employee.Salary);
             
+            deduction.EmployeeDeduction = DeductionHelper.GetEmployeeDeduction(employee);
+            netDeduction = decimal.Add(netDeduction, deduction.EmployeeDeduction);
+
+            deduction.NonRelationDependentDeduction = DeductionHelper.GetNonRelationDependentDeduction(employee);
+            netDeduction = decimal.Add(netDeduction, deduction.NonRelationDependentDeduction);
+
+            deduction.SpouseDependentDeduction = DeductionHelper.GetSpouseDependentDeduction(employee);
+            netDeduction = decimal.Add(netDeduction, deduction.SpouseDependentDeduction);
+
+            deduction.DomesticPartnerDependentDeduction = DeductionHelper.GetDomesticPartnerDependentDeduction(employee);
+            netDeduction = decimal.Add(netDeduction, deduction.DomesticPartnerDependentDeduction);
+
+            deduction.ChildDependentDeduction = DeductionHelper.GetChildDependentDeduction(employee);
+            netDeduction = decimal.Add(netDeduction, deduction.ChildDependentDeduction);
+
+            deduction.AdditionalDeductionBasedOnSalary = DeductionHelper.GetSalaryBasedDeduction(employee);
+            netDeduction = decimal.Add(netDeduction, deduction.AdditionalDeductionBasedOnSalary);
+
+            deduction.AdditionalDeductionBasedOnDependentAge = DeductionHelper.GetAgeBasedDependentDeduction(employee);
+            netDeduction = decimal.Add(netDeduction, deduction.AdditionalDeductionBasedOnDependentAge);
+
             decimal dependentDeduction = 0.00m;
             dependentDeduction = decimal.Add(dependentDeduction, deduction.NonRelationDependentDeduction);
             dependentDeduction = decimal.Add(dependentDeduction, deduction.SpouseDependentDeduction);
             dependentDeduction = decimal.Add(dependentDeduction, deduction.DomesticPartnerDependentDeduction);
             dependentDeduction = decimal.Add(dependentDeduction, deduction.ChildDependentDeduction);
-
+            dependentDeduction = decimal.Add(dependentDeduction, deduction.AdditionalDeductionBasedOnDependentAge);
             deduction.DependentDeduction = dependentDeduction;
 
-            deduction.AdditionalDeductionBasedOnDependentAge = decimal.Multiply(deduction.AdditionalDeductionBasedOnDependentAge, ageCount);
-
-            netDeduction = decimal.Add(netDeduction, deduction.NonRelationDependentDeduction);
-            netDeduction = decimal.Add(netDeduction, deduction.SpouseDependentDeduction);
-            netDeduction = decimal.Add(netDeduction, deduction.DomesticPartnerDependentDeduction);
-            netDeduction = decimal.Add(netDeduction, deduction.ChildDependentDeduction);
-            netDeduction = decimal.Add(netDeduction, deduction.AdditionalDeductionBasedOnDependentAge);
             deduction.NetDeduction = netDeduction;
-
             deduction.NetSalaryPerPayCheck = decimal.Subtract(deduction.GrossSalaryPerPayCheck, deduction.NetDeduction);
-
-
+            
             return deduction;
         }
 
