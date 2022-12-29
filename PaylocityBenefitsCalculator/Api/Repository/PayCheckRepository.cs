@@ -22,20 +22,18 @@ namespace Api.Repository
             _applicationContext = applicationContext;
             _commonRepository = commonRepository;
         }
-        public async Task<IEnumerable<GetPayCheckDto>> GetAllPayChecks(int pageNumber = 1, int pageSize = 100, string orderBy = "", string sortBy = "")
+        public async Task<IEnumerable<GetPayCheckDto>> GetAllPayChecks(int pageNumber = 1, int pageSize = 100, string orderBy = "EmployeeId", string sortBy = "asc")
         {
             using (var connection = _applicationContext.CreateConnection())
             {
                 connection.Open();
                 using (var transaction = connection.BeginTransaction())
                 {
-
-
                     var query = "SELECT Id, EmployeeId, EmployeeFirstName, EmployeeLastName, YearlySalary, GrossAmount," +
                         "EmployeeDeduction, DependentDeduction, AdditionalDeductionBasedOnSalary, " +
                         "AdditionalDeductionBasedOnDependentAge, NetAmount,[Year],[Month] " +
                         "FROM paychecks WITH (NOLOCK)" +
-                        "ORDER BY EmployeeId, [YEAR], [MONTH] OFFSET (@PageNumber-1)*@PageSize ROWS FETCH NEXT @PageSize ROWS ONLY";
+                        "ORDER BY " + orderBy +" "+  sortBy + ", [YEAR], [MONTH] OFFSET (@PageNumber-1)*@PageSize ROWS FETCH NEXT @PageSize ROWS ONLY";
                     var parameters = new DynamicParameters();
                     parameters.Add("PageNumber", pageNumber, DbType.Int64);
                     parameters.Add("PageSize", pageSize, DbType.Int64);
