@@ -74,7 +74,7 @@
             <div class="row">
                 <div class="col-5 mb-3">
                 <label class="form-label">Please Select Year</label>
-                <select formControlName="payCheckYear" class="form-control" [ngClass]="{ 'is-invalid': submitted }">
+                <select id="yearDropdown" formControlName="payCheckYear" class="form-control" [ngClass]="{ 'is-invalid': submitted }">
                     <option *ngFor="let year of years" [value]="year.id">
                       {{year.name}}
                     </option>
@@ -82,7 +82,7 @@
                 </div>
                 <div class="col-5 mb-3">
                     <label class="form-label">Please Select Month</label>
-                    <select formControlName="payCheckMonth" class="form-control" [ngClass]="{ 'is-invalid': submitted }">
+                    <select id="monthDropdown" formControlName="payCheckMonth" class="form-control" [ngClass]="{ 'is-invalid': submitted }">
                         <option *ngFor="let payCheck of payCheckNumbers" [value]="payCheck.id">
                             {{payCheck.name}}
                           </option>
@@ -92,8 +92,8 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-        <button type="button" class="btn btn-danger" (click)="modal.close(false)">Cancel</button>
-        <button type="button" class="btn btn-primary" (click)="modal.close(true)">{{ payCheckTitle }}</button>
+        <button id="cancelPopup" type="button" class="btn btn-danger" (click)="modal.close(false)">Cancel</button>
+        <button id="okPopup" type="button" class="btn btn-primary" (click)="modal.close(true)">{{ payCheckTitle }}</button>
 	</div>
 </ng-template>
 
