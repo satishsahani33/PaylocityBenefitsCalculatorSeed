@@ -39,8 +39,9 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 3. Navigate to PaylocityBenefitsApplication and then run following command through command line
 
-    ** run npm install --> It will install required packages
-    ** ng serve --> To run the application
+      ** run npm install --> It will install required packages
+      
+      ** ng serve --> To run the application
 4. Development server
 
 5. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
@@ -66,8 +67,8 @@ Entity Frameworkcore, Mssql local database, dapper
 6. After successfully executing these commands run the application(press F5), it will open Asp.Net Core Web API
 
 7. Make sure you are using the correct port
-    Default angular UI runs at: `http://localhost:4200/`
-    API runs at: `https://localhost:7124/swagger/index.htm`
+    ** Default angular UI runs at: `http://localhost:4200/`
+    ** API runs at: `https://localhost:7124/swagger/index.htm`
 
 8. Browse through angular application
 
@@ -77,8 +78,8 @@ Entity Frameworkcore, Mssql local database, dapper
 # To run the Unit Test 
 I have also create 6 test scenario in ApiTests project.
 To run simply 
-    Open solution file in visual studio 2022
-    Go to Test Menu -> Run All Test
+    ** Open solution file in visual studio 2022
+    ** Go to Test Menu -> Run All Test
 
 # To run the E2E testing in Angular
 I have used [Cypress](https://docs.cypress.io/) to implement e2e testing.
@@ -88,16 +89,16 @@ Install and configure Cypress
 
 For now, I have configured only the e2e testing.
 To run End-to-End testing
-  Make sure the angular application is running at `http://localhost:4200/`
-  Open new terminal and navigarte to angular application folder
-      Execute command
-      npm run cypress:open
-      It will open cypress test window
-      Click on E2E testing and choose any browser and click start E2E testing
-      It will open test in browser and shows the list of available test
-      Click spec.cy.ts 
-      It will execute all test configured in spec.cy.ts file
-      I have create six scenarios for paycheck validation.
+  1. Make sure the angular application is running at `http://localhost:4200/`
+  2. Open new terminal and navigarte to angular application folder
+      ** Execute command
+      ** npm run cypress:open
+      ** It will open cypress test window
+      ** Click on E2E testing and choose any browser and click start E2E testing
+      ** It will open test in browser and shows the list of available test
+      ** Click spec.cy.ts 
+      ** It will execute all test configured in spec.cy.ts file
+      ** I have create six scenarios for paycheck validation.
 # Note: 
 In case if you face any issue while running application, please feel free to email at satishsahani33@gmail.com
 
